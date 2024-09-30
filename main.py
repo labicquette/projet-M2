@@ -1,5 +1,5 @@
 from source.inference import bart
-
+from datasets import load_dataset
 
 def main():
     runs = [bart,
@@ -9,9 +9,9 @@ def main():
 
 
     datasets = [
-                #GLUE
+                load_dataset("./source/load_SCOTUS.py")
             ]
-    
+
     parameters = {}
 
     for run in runs:
