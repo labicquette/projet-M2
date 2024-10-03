@@ -46,6 +46,7 @@ def main():
         parameters["model"] = model.get_model(**parameters)
         parameters["tokenizer"] = model.get_tokenizer(**parameters)
         for dataset, name in zip(datasets, datasets_names):
+            parameters["dataset_name"] = name
             parameters["examples"] = examples_dict[name]
             parameters["labels"] = labels_dict[name]
             if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name):
