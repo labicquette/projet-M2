@@ -1,4 +1,5 @@
 /data/*
+/runs/*
 !data/.gitkeep
 /source/__pycache__
 **/__pycache__/

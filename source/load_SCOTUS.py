@@ -64,6 +64,8 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     "judge_full_name" : datasets.Value("string"),
                     "judge_last_name" : datasets.Value("string")
                     }),
+                    "examples": datasets.Value("string"),
+                    "labels" : datasets.Value("string"),
             }
         )
         
@@ -119,4 +121,7 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     "second_party_label": d["second_party_label"],
                     "decisions" : d["decisions"],
                     "written_opinion" : [{k:v for k,v in dic.items()} for dic in d["written_opinion"]],
+                    #TODO modify the labels / examples
+                    "examples": d["opinion_texts_source"][0],
+                    "labels" : d["raw_target"]["facts_of_the_case"] 
                 }
