@@ -2,6 +2,7 @@ from source.inference import bart
 from datasets import load_dataset, disable_caching
 import time
 import os
+import torch
 
 def main():
     #disable_caching()
@@ -13,10 +14,12 @@ def main():
     #TODO include CNN/DailyMail and Multi-LexSum
     datasets = [
                 #load_dataset("abisee/cnn_dailymail","3.0.0",trust_remote_code=True),
-                load_dataset("./source/load_SCOTUS.py",trust_remote_code=True),
-                #load_dataset("./source/load_SCOTUS.py",trust_remote_code=True)
+                load_dataset("./source/load_SCOTUS.py",trust_remote_code=True)
             ]
-    datasets_names = ["SCOTUS","cnn_dailymail", "SCOTUS"]
+    datasets_names = [
+                     #   "cnn_dailymail", 
+                      "SCOTUS"
+                      ]
 
 
 
@@ -62,4 +65,6 @@ def main():
                 model.inference(dataset, **parameters)                   
 
 if __name__ == '__main__':
+    print(torch.cuda.is_available())
+    print(torch.cuda.device_count())
     main()
