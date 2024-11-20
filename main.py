@@ -1,4 +1,4 @@
-from source.inference import bart
+from source.inference import bart, llama, lsa, legal_pegasus
 from datasets import load_dataset, disable_caching
 import time
 import os
@@ -6,8 +6,11 @@ import torch
 
 def main():
     #disable_caching()
-    models = [bart,
-            #pegasus,
+    models = [#bart,
+              #llama,
+              #lsa,
+              #legal_pegasus,
+              llama,
             #Llama
             ]
 
@@ -17,7 +20,7 @@ def main():
                 load_dataset("./source/load_SCOTUS.py",trust_remote_code=True)
             ]
     datasets_names = [
-                     #   "cnn_dailymail", 
+                      #"cnn_dailymail", 
                       "SCOTUS"
                       ]
 
@@ -25,14 +28,18 @@ def main():
 
     #print(len(datasets[0]['validation'][215]["opinion_texts_source"][3]))
     #print(list(datasets[0]['train'][0]))
-    examples_dict = {"cnn_dailymail":"article",
-                     "SCOTUS":"examples"}
+    examples_dict = {
+                    "cnn_dailymail":"article",
+                    "SCOTUS":"examples"
+                    }
 
-    labels_dict = {"cnn_dailymail":"highlights",
-                     "SCOTUS":"labels"}
+    labels_dict = {
+                    "cnn_dailymail":"highlights",
+                    "SCOTUS":"labels"
+                    }
 
     parameters = {
-        "run":"train"
+        "run":"validation"
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
