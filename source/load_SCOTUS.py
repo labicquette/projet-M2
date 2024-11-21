@@ -122,6 +122,6 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     "decisions" : d["decisions"],
                     "written_opinion" : [{k:v for k,v in dic.items()} for dic in d["written_opinion"]],
                     #TODO modify the labels / examples
-                    "examples": d["opinion_texts_source"][0],
+                    "examples": '<opinion_delimiter>'.join([''.join(opi) for opi in d["opinion_texts_source"]]),
                     "labels" : d["raw_target"]["facts_of_the_case"] 
                 }
