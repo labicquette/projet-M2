@@ -1,16 +1,16 @@
-from source.inference import bart, llama, lsa, legal_pegasus
+from source.inference import bart,llama, llama_more, lsa, legal_pegasus
 from datasets import load_dataset, disable_caching
 import time
 import os
 import torch
 
 def main():
-    #disable_caching()
+    disable_caching()
     models = [#bart,
               #llama,
               #lsa,
               #legal_pegasus,
-              llama,
+              llama_more,
             #Llama
             ]
 
@@ -39,7 +39,7 @@ def main():
                     }
 
     parameters = {
-        "run":"validation"
+        "run":"validation",
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
