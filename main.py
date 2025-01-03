@@ -17,7 +17,7 @@ def main():
     #TODO include CNN/DailyMail and Multi-LexSum
     datasets = [
                 #load_dataset("abisee/cnn_dailymail","3.0.0",trust_remote_code=True),
-                load_dataset("./source/load_SCOTUS.py",trust_remote_code=True)
+                load_dataset("/content/projet-M2/source/load_SCOTUS.py",trust_remote_code=True)
             ]
     datasets_names = [
                       #"cnn_dailymail", 

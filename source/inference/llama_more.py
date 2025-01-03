@@ -140,7 +140,7 @@ def generate_final_summaries(dataset, **parameters):
     client = parameters["model"]  # Use a configurable model client for flexibility
     examples = parameters["examples"]  # Allow specifying which examples to process
     save_path = parameters["save_path"]  # Define where the final summaries are saved
-    summary_files_path = "/home/vik/projet-M2/runs/Summary/llama_more/SCOTUS/validation/"# Specify location of small summaries
+    summary_files_path = "/content/drive/MyDrive/projet_m2/runs/Summary/llama_more/SCOTUS/validation/"# Specify location of small summaries
 
     if not os.path.exists(save_path):  # Ensure the output directory exists before saving
         os.makedirs(save_path)  # Create the output directory if it doesn’t exist
@@ -191,11 +191,11 @@ def generate_final_summaries(dataset, **parameters):
 
 def inference(dataset, **parameters):
   # Check if the user wants to run the first function
-        print("Executing extract_and_summarize_citations...")
-        extract_and_summarize_citations(dataset, **parameters)  # Call the first function
+        #print("Executing extract_and_summarize_citations...")
+        #extract_and_summarize_citations(dataset, **parameters)  # Call the first function
 
-        #print("Executing generate_final_summaries...")
-        #generate_final_summaries(dataset, **parameters)  # Call the second function
+        print("Executing generate_final_summaries...")
+        generate_final_summaries(dataset, **parameters)  # Call the second function
 
 
 
