@@ -128,7 +128,7 @@ def extract_and_summarize_citations(dataset, **parameters):
                 small_summary = summary_response['message']['content']  # Extract the model output for reuse
 
                 # Save the small summary to a file
-                file_name = f"{justia_link.replace('/', '_')}.txt" if justia_link else f"link_summary_{hash(full_link)}.txt"  
+                file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt" #f"{justia_link.replace('/', '_')}.txt" if justia_link else f"link_summary_{hash(full_link)}.txt"  
                 # Use `justia_link` to create unique and recognizable file names
                 with open(os.path.join(save_path, file_name), "w") as f:  # Open file in write mode to save summary
                     f.write(small_summary)  # Save the summary for reuse in subsequent steps
@@ -140,7 +140,7 @@ def generate_final_summaries(dataset, **parameters):
     client = parameters["model"]  # Use a configurable model client for flexibility
     examples = parameters["examples"]  # Allow specifying which examples to process
     save_path = parameters["save_path"]  # Define where the final summaries are saved
-    summary_files_path = parameters["summary_files_path"]  # Specify location of small summaries
+    summary_files_path = "/home/vik/projet-M2/runs/Summary/llama_more/SCOTUS/validation/"# Specify location of small summaries
 
     if not os.path.exists(save_path):  # Ensure the output directory exists before saving
         os.makedirs(save_path)  # Create the output directory if it doesn’t exist
@@ -158,7 +158,7 @@ def generate_final_summaries(dataset, **parameters):
         processed_text = original_text  # Initialize processed text to modify it in-place
 
         for full_link in full_links:  # Iterate over links for individual replacement
-            summary_file_name = f"{full_link.replace('/', '_')}.txt"  # Generate the corresponding file name
+            summary_file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt"  # Generate the corresponding file name
             summary_file_path = os.path.join(summary_files_path, summary_file_name)  # Build the full file path
 
             if os.path.exists(summary_file_path):  # Ensure the summary file exists before using it
@@ -195,7 +195,7 @@ def inference(dataset, **parameters):
         extract_and_summarize_citations(dataset, **parameters)  # Call the first function
 
         #print("Executing generate_final_summaries...")
-       # generate_final_summaries(dataset, **parameters)  # Call the second function
+        #generate_final_summaries(dataset, **parameters)  # Call the second function
 
 
 

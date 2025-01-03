@@ -97,6 +97,37 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
             #     },
             # ),
         ]
+    '''
+    import os
+
+def _split_generators(self, dl_manager):
+    """Returns SplitGenerators."""
+
+    # Define the path to your Google Drive directory
+    google_drive_base_path = "/content/drive/MyDrive/path/to/your/files"
+
+    return [
+        datasets.SplitGenerator(
+            name=datasets.Split.TRAIN,
+            gen_kwargs={
+                "filepath": os.path.join(google_drive_base_path, "train.json"),
+            },
+        ),
+        datasets.SplitGenerator(
+            name=datasets.Split.VALIDATION,
+            gen_kwargs={
+                "filepath": os.path.join(google_drive_base_path, "dev.json"),
+            },
+        ),
+        # Uncomment and modify this if you want to add a test set
+        # datasets.SplitGenerator(
+        #     name=datasets.Split.TEST,
+        #     gen_kwargs={
+        #         "filepath": os.path.join(google_drive_base_path, "test.json"),
+        #     },
+        # ),
+    ]
+    '''
 
     def _generate_examples(self, filepath):
 
