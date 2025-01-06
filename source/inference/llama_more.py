@@ -12,7 +12,6 @@ def get_model(**parameters):
 def get_tokenizer(**parameters):
     return "tok"
 
-
 def extract_and_summarize_citations(dataset, **parameters):
     base_url = "https://supreme.justia.com"  # Set the base URL for constructing absolute links
     run = parameters["run"]  # Use a parameter to dynamically select the dataset subset
@@ -25,16 +24,8 @@ def extract_and_summarize_citations(dataset, **parameters):
         os.makedirs(save_path)  # Create the directory if it doesn’t exist
 
     for ex in tqdm(dataset[run][examples]):  # Iterate over the dataset for batch processing
-        if isinstance(ex, dict):  # Handle dictionary entries for flexibility in dataset structure
-            original_text = ex["examples"]  # Extract the text directly for easier processing
-            justia_link = ex.get("justia_link")  # Get the link if it exists, to name output files
-        elif isinstance(ex, str):  # Handle string entries for uniform processing
-            original_text = ex  # Treat the string as the main text to process
-            justia_link = None  # No link associated with plain strings
-        else:
-            raise TypeError("Unexpected structure for dataset entry: Must be a dict or string.")  # Error handling for robustness
-
-        links = re.findall(link_pattern, original_text)  # Extract all links from the text for summarization
+        
+        links = re.findall(link_pattern, ex)  # Handle both strings and dictionaries
         full_links = [base_url + link for link in links]  # Convert relative links to absolute for uniformity
 
         for full_link in full_links:  # Process each extracted link separately for better granularity
@@ -42,12 +33,12 @@ def extract_and_summarize_citations(dataset, **parameters):
                 (item for item in dataset[run] if isinstance(item, dict) and item.get("justia_link") == full_link), 
                 None
             )  # Find the corresponding entry in the dataset for link integrity
-            
+
             if linked_entry:  # Ensure that a corresponding entry exists before proceeding
                 linked_text = linked_entry["examples"]  # Retrieve the text to summarize it
                 summary_response = client.chat(  # Use the model to generate a summary for scalability
                     model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-                    options= {"num_ctx":11500},  # Allow specification of model for flexibility
+                    options={"num_ctx": 11500},  # Allow specification of model for flexibility
                     messages=[
                         {
                             'role': 'user',
@@ -62,10 +53,10 @@ def extract_and_summarize_citations(dataset, **parameters):
                 small_summary = summary_response['message']['content']  # Extract the model output for reuse
 
                 # Save the small summary to a file
-                file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt" #f"{justia_link.replace('/', '_')}.txt" if justia_link else f"link_summary_{hash(full_link)}.txt"  
-                # Use `justia_link` to create unique and recognizable file names
+                file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt"
                 with open(os.path.join(save_path, file_name), "w") as f:  # Open file in write mode to save summary
                     f.write(small_summary)  # Save the summary for reuse in subsequent steps
+
 
 
 def generate_final_summaries(dataset, **parameters):
@@ -80,16 +71,9 @@ def generate_final_summaries(dataset, **parameters):
         os.makedirs(save_path)  # Create the output directory if it doesn’t exist
 
     for i, ex in enumerate(tqdm(dataset[run][examples])):  # Use progress tracking for transparency
-        if isinstance(ex, dict):  # Handle dictionary entries for dataset flexibility
-            original_text = ex["examples"]  # Extract the main text for processing
-        elif isinstance(ex, str):  # Handle string entries for uniformity
-            original_text = ex  # Treat the string as the main text
-        else:
-            raise TypeError("Unexpected structure for dataset entry: Must be a dict or string.")  # Error handling for robustness
-
-        links = re.findall(r'<a href="(/cases/federal/us/\d+/\d+/)".*?>.*?</a>', original_text)  # Extract links for processing
+        links = re.findall(r'<a href="(/cases/federal/us/\d+/\d+/)".*?>.*?</a>',ex)  # Extract links for processing
         full_links = [base_url + link for link in links]  # Convert relative links to absolute for uniformity
-        processed_text = original_text  # Initialize processed text to modify it in-place
+        processed_text = ex  # Initialize processed text to modify it in-place
 
         for full_link in full_links:  # Iterate over links for individual replacement
             summary_file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt"  # Generate the corresponding file name
@@ -126,11 +110,11 @@ def generate_final_summaries(dataset, **parameters):
 
 def inference(dataset, **parameters):
   # Check if the user wants to run the first function
-        #print("Executing extract_and_summarize_citations...")
-        #extract_and_summarize_citations(dataset, **parameters)  # Call the first function
+        print("Executing extract_and_summarize_citations...")
+        extract_and_summarize_citations(dataset, **parameters)  # Call the first function
 
-        print("Executing generate_final_summaries...")
-        generate_final_summaries(dataset, **parameters)  # Call the second function
+        #print("Executing generate_final_summaries...")
+        #generate_final_summaries(dataset, **parameters)  # Call the second function
 
 
 

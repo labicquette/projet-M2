@@ -22,7 +22,7 @@ def main():
     datasets_names = [
                       #"cnn_dailymail", 
                       "SCOTUS"
-                      ]
+                     ]
 
 
 
