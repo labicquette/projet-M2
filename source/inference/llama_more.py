@@ -38,7 +38,7 @@ def extract_and_summarize_citations(dataset, **parameters):
                 linked_text = linked_entry["examples"]  # Retrieve the text to summarize it
                 summary_response = client.chat(  # Use the model to generate a summary for scalability
                     model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-                    options={"num_ctx": 11500},  # Allow specification of model for flexibility
+                    options={"num_ctx": 115000},  # Allow specification of model for flexibility
                     messages=[
                         {
                             'role': 'user',
