@@ -11,74 +11,7 @@ def get_model(**parameters):
 
 def get_tokenizer(**parameters):
     return "tok"
-"""
-# Regex pattern to extract links from text
-link_pattern = r'<a href="(/cases/federal/us/\d+/\d+/)".*?>.*?</a>'
 
-
-def inference(dataset, **parameters):
-    base_url = "https://supreme.justia.com"  # Base URL for constructing full links
-    run = parameters["run"]  # Specifies which part of the dataset to process
-    client = parameters["model"]  # AI model object for text summarization
-    examples = parameters["examples"]  # Subset of examples to process
-    save_path = parameters["save_path"]  # Path to save final processed summaries
-
-    for i, ex in enumerate(tqdm(dataset[run][examples])):  # Iterate over the dataset entries
-        # Check if `ex` is a string or dictionary
-        if isinstance(ex, dict):
-            original_text = ex["examples"]  # Extract the original text for processing
-            justia_link = ex.get("justia_link")  # Extract the link if available
-        elif isinstance(ex, str):
-            original_text = ex  # If `ex` is just a string, treat it as the input text
-            justia_link = None  # No link available in this case
-        else:
-            raise TypeError("Unexpected structure for dataset entry: Must be a dict or string.")
-
-        links = re.findall(link_pattern, original_text)  # Extract relative links from the text
-        full_links = [base_url + link for link in links]  # Convert relative links to full URLs
-        processed_text = original_text  # Initialize the processed text with the original content
-
-        for full_link in full_links:  # Iterate over each extracted link
-            linked_entry = next((item for item in dataset[run] if isinstance(item, dict) and item.get("justia_link") == full_link), None)  # Find matching link in the dataset
-            if linked_entry:  # If a matching entry is found
-                linked_text = linked_entry["examples"]  # Retrieve the text associated with the link
-                # Summarize the linked text using the AI model
-                summary_response = client.chat(
-                    model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-                    messages=[
-                        {
-                            'role': 'user',
-                            'content': "You are an expert at writing short summaries. Your job is to summarize the text below in exactly 3 SHORT SENTENCES. Focus only on the most important information and leave out everything extra in order to make 3 SHORT SENTENCES.Make sure it is clear, simple, and easy to understand with 3 SHORT SENTENCES. Do not add unnecessary details, and do not make it longer than 3 SHORT SENTENCES.Here's the text: " + linked_text +" Start: with this text name is [fill blank] its core message is ...",
-                        },
-                    ]
-                )
-                summary = summary_response['message']['content']  # Extract the summary from the AI response
-                print("--- BEGIN SMALL SUMMARY--- \n"+ summary +"\n --- END SMALL SUMMARY--- ") # print small summary
-                # Replace the link in the text with the summarized content
-                processed_text = processed_text.replace(
-                    f'<a href="{full_link}">link</a>',
-                    summary
-                )
-
-        # Generate the final summary for the processed text using the AI model
-        final_summary_response = client.chat(
-            model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-            messages=[
-                {
-                    'role': 'user',
-                    'content': "Resume the content of the following text while keeping all the information: " + processed_text,
-                },
-            ]
-        )
-        final_summary = final_summary_response['message']['content']  # Extract the final summary
-        print(final_summary)  # Print the final summary
-
-        # Save the final summary to a file
-        file_name = get_file(ex, parameters["dataset_name"]) if isinstance(ex, dict) else f"entry_{i}.txt"  # Generate a unique file name
-        with open(save_path + file_name, "w") as f:  # Open the file in write mode
-            f.write(final_summary)  # Write the final summary to the file
-            f.close()  # Close the file
-"""
 
 def extract_and_summarize_citations(dataset, **parameters):
     base_url = "https://supreme.justia.com"  # Set the base URL for constructing absolute links
@@ -109,11 +42,12 @@ def extract_and_summarize_citations(dataset, **parameters):
                 (item for item in dataset[run] if isinstance(item, dict) and item.get("justia_link") == full_link), 
                 None
             )  # Find the corresponding entry in the dataset for link integrity
-
+            
             if linked_entry:  # Ensure that a corresponding entry exists before proceeding
                 linked_text = linked_entry["examples"]  # Retrieve the text to summarize it
                 summary_response = client.chat(  # Use the model to generate a summary for scalability
-                    model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',  # Allow specification of model for flexibility
+                    model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
+                    options= {"num_ctx":11500},  # Allow specification of model for flexibility
                     messages=[
                         {
                             'role': 'user',
@@ -172,7 +106,8 @@ def generate_final_summaries(dataset, **parameters):
 
         # Generate the final summary
         final_summary_response = client.chat(  # Use the model for creating the final summary
-            model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',  # Allow model configuration
+            model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
+            options= {"num_ctx":11500},
             messages=[
                 {
                     'role': 'user',
@@ -185,7 +120,7 @@ def generate_final_summaries(dataset, **parameters):
         final_summary = final_summary_response['message']['content']  # Extract the final summary from the model
 
         # Save the final summary to a file
-        file_name = f"Summary_opi_{i + 1}.txt"  # Use sequential naming for clarity and uniqueness
+        file_name =get_file(dataset[run][i], parameters["dataset_name"])  # Use sequential naming for clarity and uniqueness
         with open(os.path.join(save_path, file_name), "w") as f:  # Open file in write mode to save the final summary
             f.write(final_summary)  # Save the summary for future use or analysis
 
