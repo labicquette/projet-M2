@@ -78,16 +78,16 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
         """Returns SplitGenerators."""
 
         return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "filepath": os.path.join("./data/SCOTUS/", "train.json"),
-                },
-            ),
+            # datasets.SplitGenerator(
+            #     name=datasets.Split.TRAIN,
+            #     gen_kwargs={
+            #         "filepath": os.path.join("./data/SCOTUS/", "train.json"),
+            #     },
+            # ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
                 gen_kwargs={
-                    "filepath": os.path.join("./data/SCOTUS/", "preprocessed_dev.json"),
+                    "filepath": os.path.join("./data/SCOTUS/", "cleaned_dev.json"),
                 },
             ),
             # datasets.SplitGenerator(
@@ -122,7 +122,7 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     "decisions" : d["decisions"],
                     "written_opinion" : [{k:v for k,v in dic.items()} for dic in d["written_opinion"]],
                     #TODO modify the labels / examples
-                    "examples": '<opinion_delimiter>'.join([''.join(opi) for opi in d["opinion_texts_source"]]),
-                    "labels" : d["raw_target"]["facts_of_the_case"],
-                    "input_text_cleaned": d["input_text_cleaned"] 
+                    "examples":d["raw_source"] ,
+                    # "examples": '<opinion_delimiter>'.join([''.join(opi) for opi in d["opinion_texts_source"]]),
+                    "labels" : d["raw_target"]["facts_of_the_case"] 
                 }
