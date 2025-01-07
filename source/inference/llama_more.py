@@ -45,13 +45,13 @@ def extract_and_summarize_citations(dataset, **parameters):
                             'content': (
                                 "You are an expert at writing short summaries. Your job is to summarize the text below in exactly "
                                 "3 SHORT SENTENCES. Focus only on the most important information and leave out everything extra in order "
-                                "to make 3 SHORT SENTENCES. Here's the text: " + linked_text
+                                "to make 3 SHORT SENTENCES. Here's the text: " + linked_text+ "make sure to make 3 SHORT SENTENCES.Not more"
                             )
                         },
                     ]
                 )
                 small_summary = summary_response['message']['content']  # Extract the model output for reuse
-
+                print(small_summary)
                 # Save the small summary to a file
                 file_name = f"{full_link.replace('/', '_').replace('.', '_')}.txt"
                 with open(os.path.join(save_path, file_name), "w") as f:  # Open file in write mode to save summary
