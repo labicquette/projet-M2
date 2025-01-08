@@ -1,28 +1,28 @@
-from source.inference import bart, llama, lsa, legal_pegasus
+from source.inference import bart,llama, llama_more, lsa, legal_pegasus
 from datasets import load_dataset, disable_caching
 import time
 import os
 import torch
 
 def main():
-    #disable_caching()
+    disable_caching()
     models = [#bart,
               #llama,
               #lsa,
               #legal_pegasus,
-              llama,
+              llama_more,
             #Llama
             ]
 
     #TODO include CNN/DailyMail and Multi-LexSum
     datasets = [
                 #load_dataset("abisee/cnn_dailymail","3.0.0",trust_remote_code=True),
-                load_dataset("./source/load_SCOTUS.py",trust_remote_code=True)
+                load_dataset("/content/projet-M2/source/load_SCOTUS.py",trust_remote_code=True)
             ]
     datasets_names = [
                       #"cnn_dailymail", 
                       "SCOTUS"
-                      ]
+                     ]
 
 
 
@@ -39,7 +39,7 @@ def main():
                     }
 
     parameters = {
-        "run":"validation"
+        "run":"validation",
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")

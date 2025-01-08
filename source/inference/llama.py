@@ -17,15 +17,19 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
 
-    for i,ex in enumerate(tqdm(dataset[run][examples])):
-        response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:IQ3_M', messages=[
-                {
-                    'role': 'user',
-                    'content': "Resume the content of the following text while keeping all the information" + ex,
-                },
-                ])
-        print(response['message']['content'])
-        file = get_file(dataset[run][i], parameters["dataset_name"])
-        with open(parameters["save_path"]+file, "w") as f:
-            f.write(response['message']['content'])
-            f.close()
+    
+
+    for i,ex in enumerate(tqdm(dataset[run][examples])):    
+          response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
+                  {
+                      'role': 'user',
+                      'content': "Resume the content of the following text while keeping all the information" + ex,
+                  },
+                  ])
+          print(response['message']['content'])
+
+          file = get_file(dataset[run][i], parameters["dataset_name"])
+          with open(parameters["save_path"]+file, "w") as f:
+              f.write(response['message']['content'])
+              f.close()
+
