@@ -29,16 +29,27 @@ def inference(dataset, **parameters):
     # Initialiser la base de vecteurs
     vector_store = Chroma(persist_directory="/content/projet-M2/data/chroma_db", embedding_function=embedding_model)
     retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 5})
+    
+    # Construire les exemples few-shot à partir des 5 premières lignes du dataset
+    few_shot_examples = ""
+    for i in range(5):
+        text = dataset[run][i]["examples"]
+        summary = dataset[run][i]["labels"]
+        few_shot_examples += f"Text to summarize: {text}\nSummary: {summary}\n\n"
+
 
     # Construire le template du prompt
     prompt_template = """
-    Vous êtes un expert en résumé de texte légal dans le cadre de procès pour prendre des décisions de justice.
-    Rédigez un résumé clair et concis adapté à un professionnel du droit.
-    Utilisez un langage précis et formel, en capturant les points clés du texte.
+    You are an expert in summarizing legal texts for court cases to support judicial decision-making.
+    Draft a clear and concise summary tailored to a legal professional.
+    Use precise and formal language, capturing the key points of the text.
+    
+    Here are some examples:
+    {few_shot_examples}
 
-    Contexte : {context}
-    Question : {question}
-    Réponse
+    Context: {context}
+    Question: {question}
+    Answer:
     """
     generation_prompt = ChatPromptTemplate.from_template(prompt_template)
 
@@ -51,14 +62,21 @@ def inference(dataset, **parameters):
     # Boucle d'inférence
     for i, ex in enumerate(tqdm(dataset[run][examples], desc="Processing examples")):
         # Générer la requête utilisateur
-        user_query = f"résumer le cas juridique suivant : {ex}"
+        user_query = f"Summarize the following legal case: : {ex}"
 
         # Récupérer les documents pertinents à partir de la base de vecteurs
         relevant_chunks = retriever.invoke(user_query)
         context_text = "\n\n---\n\n".join([result.page_content for result in relevant_chunks])
 
         # Construire le prompt complet avec le contexte
-        prompt = generation_prompt.format(context=context_text, question=user_query)
+        # prompt = generation_prompt.format(context=context_text, question=user_query)
+                # Construire le prompt complet avec le contexte
+        
+        prompt = generation_prompt.format(
+            context=context_text,
+            question=user_query,
+            few_shot_examples=few_shot_examples
+        )
 
         # Envoyer le prompt au modèle ChatOllama
         response = llm.predict(prompt)

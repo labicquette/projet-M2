@@ -66,6 +66,7 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     }),
                     "examples": datasets.Value("string"),
                     "labels" : datasets.Value("string"),
+                    "summary": datasets.Value("string"),
             }
         )
         
@@ -108,6 +109,7 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
 
                 yield key, {
                     "justia_link": d["justia_link"],
+                    
                     "docket_number": d["docket_number"],
                     "year_argued": d["year_argued"],
                     "court_name": d["court_name"],
@@ -124,5 +126,6 @@ class SCOTUS(datasets.GeneratorBasedBuilder):
                     #TODO modify the labels / examples
                     "examples":d["raw_source"] ,
                     # "examples": '<opinion_delimiter>'.join([''.join(opi) for opi in d["opinion_texts_source"]]),
-                    "labels" : d["raw_target"]["facts_of_the_case"] 
+                    # "labels" : d["raw_target"]["facts_of_the_case"],
+                    "labels": d["summary"], 
                 }
