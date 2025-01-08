@@ -30,23 +30,22 @@ def inference(dataset, **parameters):
     vector_store = Chroma(persist_directory="/content/projet-M2/data/chroma_db", embedding_function=embedding_model)
     retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 5})
     
-    # Construire les exemples few-shot à partir des 5 premières lignes du dataset
-    few_shot_examples = ""
-    for i in range(5):
-        text = dataset[run][i]["examples"]
-        summary = dataset[run][i]["labels"]
-        few_shot_examples += f"Text to summarize: {text}\nSummary: {summary}\n\n"
+    # # Construire les exemples few-shot à partir des 5 premières lignes du dataset
+    # few_shot_examples = ""
+    # for i in range(5):
+    #     text = dataset[run][i]["examples"]
+    #     summary = dataset[run][i]["labels"]
+    #     few_shot_examples += f"Text to summarize: {text}\nSummary: {summary}\n\n"
 
-
+    # Here are some examples:
+    # {few_shot_examples}
+    
     # Construire le template du prompt
     prompt_template = """
     You are an expert in summarizing legal texts for court cases to support judicial decision-making.
     Draft a clear and concise summary tailored to a legal professional.
     Use precise and formal language, capturing the key points of the text.
     
-    Here are some examples:
-    {few_shot_examples}
-
     Context: {context}
     Question: {question}
     Answer:
@@ -69,14 +68,14 @@ def inference(dataset, **parameters):
         context_text = "\n\n---\n\n".join([result.page_content for result in relevant_chunks])
 
         # Construire le prompt complet avec le contexte
-        # prompt = generation_prompt.format(context=context_text, question=user_query)
+        prompt = generation_prompt.format(context=context_text, question=user_query)
                 # Construire le prompt complet avec le contexte
         
-        prompt = generation_prompt.format(
-            context=context_text,
-            question=user_query,
-            few_shot_examples=few_shot_examples
-        )
+        # prompt = generation_prompt.format(
+        #     context=context_text,
+        #     question=user_query,
+        #     few_shot_examples=few_shot_examples
+        # )
 
         # Envoyer le prompt au modèle ChatOllama
         response = llm.predict(prompt)

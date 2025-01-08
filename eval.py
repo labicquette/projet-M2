@@ -3,21 +3,22 @@ import os
 from datasets import load_dataset
 from source.utils import get_file, labels_dict
 import evaluate
-from source.sari import Sari
+# from source.sari import Sari
 #rouge = evaluate.load("rouge")
 #sari = evaluate.load("sari")
 
 dataset_paths = {"SCOTUS": "./source/load_SCOTUS.py",
-                 "cnn_dailymail" :"abisee/cnn_dailymail",}
+                #  "cnn_dailymail" :"abisee/cnn_dailymail",
+                }
 examples_dict = {
-                    "cnn_dailymail":"article",
+                    # "cnn_dailymail":"article",
                     "SCOTUS":"examples"
                     }
 
 
 def evaluation():
     rouge = evaluate.load("rouge")
-    sari = Sari()
+    # sari = Sari()
     models = dirs  = [ f.path for f in os.scandir("./runs/Summary") if f.is_dir() ]
     for m in models:
         dirs  = [ f.path for f in os.scandir(m) if f.is_dir() ]
@@ -42,7 +43,7 @@ def evaluation():
                 sources = dataset[split.split("/")[-1]][examples_dict[name]]
                 references = dataset[split.split("/")[-1]][labels_dict[name]]
                 result = rouge.compute(predictions=column, references=references, use_stemmer=True)
-                sari_results = sari.compute(sources=[sources], predictions=[column], references=[references])
+                # sari_results = sari.compute(sources=[sources], predictions=[column], references=[references])
                 print("ROUGE : ", result)
                 #print("SARI : ", sari_results.keys())
     
