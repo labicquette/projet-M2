@@ -39,11 +39,16 @@ def inference(dataset, **parameters):
 
 
     # Construire le template du prompt
+    # Construire le prompt template avec des étapes claires
     prompt_template = """
     You are an expert in summarizing legal texts for court cases to support judicial decision-making.
-    Draft a clear and concise summary tailored to a legal professional.
-    Use precise and formal language, capturing the key points of the text.
+    Your task is to extract and summarize the key elements of a legal text. Follow these steps:
     
+    Step 1: Identify the most relevant sentences directly from the text. Copy them verbatim.
+    Step 2: Combine these sentences into a concise and formal summary, capturing the key facts, legal arguments, and court decisions.
+
+    Use precise and formal language, ensuring clarity and relevance for legal professionals.
+
     Here are some examples:
     {few_shot_examples}
 
@@ -58,6 +63,8 @@ def inference(dataset, **parameters):
         model="llama3.2",
         temperature=0  # Ajustez selon vos besoins
     )
+    # llm = ChatOpenAI(temperature=0, openai_api_key=os.environ["OPENAI_API_KEY"], model=MODEL_langchain)
+
 
     # Boucle d'inférence
     for i, ex in enumerate(tqdm(dataset[run][examples], desc="Processing examples")):
