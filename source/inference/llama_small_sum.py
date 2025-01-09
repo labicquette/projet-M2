@@ -31,7 +31,9 @@ def inference(dataset, **parameters):
 
     for i, ex in enumerate(tqdm(dataset[run][examples])):
         ex_no_html = remove_html_tags(ex)
-        response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
+        response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', 
+         options={"num_ctx": 128000, "num_gpu":60},
+        messages=[
             {
                 'role': 'user',
                 'content': ("You are an expert at writing short summaries. Your job is to summarize the text below in exactly " +
