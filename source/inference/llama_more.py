@@ -18,7 +18,7 @@ def extract_and_summarize_citations(dataset, **parameters):
     run = parameters["run"]  # Use a parameter to dynamically select the dataset subset
     client = parameters["model"]  # Make the model client configurable for flexibility
     examples = parameters["examples"]  # Allow selection of a subset of examples for processing
-    save_path = parameters["save_path"]  # Allow the user to define where summaries are saved
+    save_path = '/content/projet-M2/data/little_sum' # Allow the user to define where summaries are saved
     link_pattern = r'<a href="(/cases/federal/us/\d+/\d+/)".*?>.*?</a>'  # Use a regex to extract links for compatibility with HTML
     #<a href=\\"/[A-Za-z]+/[A-Za-z]+/[A-Za-z]+/267/517/\\">[A-Za-z0-9]+</a>
    
@@ -112,11 +112,11 @@ def generate_final_summaries(dataset, **parameters):
 
 def inference(dataset, **parameters):
   # Check if the user wants to run the first function
-        #print("Executing extract_and_summarize_citations...")
-        #extract_and_summarize_citations(dataset, **parameters)  # Call the first function
+        print("Executing extract_and_summarize_citations...")
+        extract_and_summarize_citations(dataset, **parameters)  # Call the first function
 
-        print("Executing generate_final_summaries...")
-        generate_final_summaries(dataset, **parameters)  # Call the second function
+        #print("Executing generate_final_summaries...")
+        #generate_final_summaries(dataset, **parameters)  # Call the second function
 
 
 
