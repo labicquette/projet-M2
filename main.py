@@ -1,4 +1,4 @@
-from source.inference import bart,llama, llama_more, lsa, legal_pegasus
+from source.inference import bart,llama, llama_more, lsa, legal_pegasus, llama_small_sum
 from datasets import load_dataset, disable_caching
 import time
 import os
@@ -10,7 +10,8 @@ def main():
               #llama,
               #lsa,
               #legal_pegasus,
-              llama_more,
+              #llama_more,
+              llama_small_sum,
             #Llama
             ]
 
@@ -39,7 +40,7 @@ def main():
                     }
 
     parameters = {
-        "run":"validation",
+        "run":"train",
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
