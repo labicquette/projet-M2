@@ -26,7 +26,7 @@ def extract_and_summarize_citations(dataset, **parameters):
     if not os.path.exists(save_path):  # Ensure the directory exists before saving files
         os.makedirs(save_path)  # Create the directory if it doesn’t exist
 
-    for ex in tqdm(dataset[run][examples][350:]):  # Iterate over the dataset for batch processing            
+    for ex in tqdm(dataset[run][examples]):  # Iterate over the dataset for batch processing            
         links = re.findall(link_pattern, ex)  # Handle both strings and dictionaries
         full_links = [base_url + link for link in links]  # Convert relative links to absolute for uniformity
 
@@ -40,7 +40,7 @@ def extract_and_summarize_citations(dataset, **parameters):
                 linked_text = re.sub(r'<[^>]+>', '', linked_entry["examples"])  # Remove all HTML tags from linked text except links
                 summary_response = client.chat(  # Use the model to generate a summary for scalability
                     model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-                    options={"num_ctx": 115000},  # Allow specification of model for flexibility
+                    options={"num_ctx": 115000, "num_gpu":60},  # Allow specification of model for flexibility
                     messages=[
                         {
                             'role': 'user',
@@ -92,7 +92,7 @@ def generate_final_summaries(dataset, **parameters):
         # Generate the final summary
         final_summary_response = client.chat(  # Use the model for creating the final summary
             model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M',
-            options= {"num_ctx":120000},
+            options= {"num_ctx":120000, "num_gpu":60},
             messages=[
                 {
                     'role': 'user',
