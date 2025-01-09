@@ -11,6 +11,9 @@ def get_tokenizer(**parameters):
     return "tok"
 
 def mapped(ex, i, client, dataset, run, parameters):
+  file = get_file(dataset[run][i], parameters["dataset_name"])
+  if os.path.exists(parameters["save_path"]+file):
+        continue
   response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
                 {
                     'role': 'user',
@@ -34,6 +37,9 @@ def inference(dataset, **parameters):
 
     dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     for i,ex in enumerate(tqdm(dataset[run][examples])):
+        file = get_file(dataset[run][i], parameters["dataset_name"])
+        if os.path.exists(parameters["save_path"]+file):
+            continue
         response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
                 {
                     'role': 'user',
