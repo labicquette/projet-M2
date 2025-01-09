@@ -10,6 +10,20 @@ def get_model(**parameters):
 def get_tokenizer(**parameters):
     return "tok"
 
+def mapped(ex, i, client, dataset, run, parameters):
+  response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
+                {
+                    'role': 'user',
+                    'content': "Resume the content of the following text while keeping all the information" + ex,
+                },
+                ],
+                options={"num_ctx":128000, "num_gpu":60})
+  #print(response['message']['content'])
+  file = get_file(dataset[run][i], parameters["dataset_name"])
+  with open(parameters["save_path"]+file, "w") as f:
+            f.write(response['message']['content'])
+            f.close()
+
 def inference(dataset, **parameters):
 
     run = parameters["run"]
@@ -17,6 +31,8 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
 
+
+    dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     for i,ex in enumerate(tqdm(dataset[run][examples])):
         response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
                 {
