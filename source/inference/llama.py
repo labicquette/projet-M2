@@ -56,11 +56,11 @@ def inference(dataset, **parameters):
             pipe.tokenizer.convert_tokens_to_ids("<|eot_id|>")
             ] 
     pipe.model.generation_config.pad_token_id = pipe.tokenizer.eos_token_id
-    print(dataset)
     prompts = [ "Resume the content of the following text while keeping all the information" + t for t in dataset[run][examples]]
     #dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     #print(prompts)
-    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,eos_token_id=terminators,)):
+    print("start pipeline")
+    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,truncation=True,eos_token_id=terminators,)):
         text = out[0]['generated_text']
         print(text)
         print("out", out)
