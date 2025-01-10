@@ -65,7 +65,7 @@ def evaluation():
                 print("ROUGE :", rouge_result)
                 print("BERTScore (F1):", sum(bertscore_result['f1']) / len(bertscore_result['f1']))  # Moyenne des F1
                 print("SARI :", sari_result)
-                res = "\n" + model + ds + split.split("/")[-1] + str(rouge_result["rouge1"]) + "," + str(rouge_result["rouge2"]) +  "," + str(rouge_result["rougeL"]) +  "," + str(rouge_result["rougeLsum"]) +"," + str(sum(bertscore_result['f1']) / len(bertscore_result['f1'])) +  "," + str(sari_result['sari'])
+                res = "\n" + model + "," + ds + "," + split.split("/")[-1] + "," + str(rouge_result["rouge1"]) + "," + str(rouge_result["rouge2"]) +  "," + str(rouge_result["rougeL"]) +  "," + str(rouge_result["rougeLsum"]) +"," + str(sum(bertscore_result['f1']) / len(bertscore_result['f1'])) +  "," + str(sari_result['sari'])
                 
                 with open("./results.csv", "a") as file:
                     file.write(res)
