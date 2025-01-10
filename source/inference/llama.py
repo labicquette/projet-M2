@@ -4,7 +4,7 @@ from ollama import Client
 from tqdm import tqdm
 import os
 import torch
-from transformers import pipeline, AutoTokenizer
+from transformers import pipeline, AutoTokenizer, AutoModel
 
 def get_model(**parameters):
     client = Client(host='http://localhost:11434')
@@ -37,11 +37,11 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
     model_id = "meta-llama/Llama-3.2-1B"
+    model = AutoModel.from_pretrained(model_id)
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     pipe = pipeline("text-generation",
-                    model=model_id,
+                    model=model,
                     tokenizer = tokenizer,
-                    attn_implementation="flash_attention_2",
                     token=parameters["hf_token"],
                     device_map="auto",
                     torch_dtype=torch.bfloat16,
