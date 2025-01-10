@@ -41,6 +41,7 @@ def inference(dataset, **parameters):
                                                  attn_implementation = 'flash_attention_2',
                                                  torch_dtype = torch.bfloat16,
                                                  device_map="auto")
+    model = torch.compile(model)
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     pipe = pipeline("text-generation",
                     model=model,
@@ -60,7 +61,7 @@ def inference(dataset, **parameters):
     #dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     #print(prompts)
     print("start pipeline")
-    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,truncation=True,eos_token_id=terminators, cache_implementation="quantized", cache_config={"nbits": 4, "backend": "quanto"})):
+    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,truncation=True,eos_token_id=terminators, cache_implementation="static")):
         text = out[0]['generated_text']
         print(text)
         print("out", out)
