@@ -42,6 +42,7 @@ def inference(dataset, **parameters):
     pipe = pipeline("text-generation",
                     model=model_id,
                     tokenizer = tokenizer,
+                    token=parameters["hf_token"],
                     device_map="auto",
                     torch_dtype=torch.bfloat16,
                     max_new_tokens=20,

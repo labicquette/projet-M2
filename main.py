@@ -5,6 +5,7 @@ import os
 import torch
 
 def main():
+    hf_token = os.environ['HF_TOKEN']
     #disable_caching()
     models = [#bart,
               #llama,
@@ -39,7 +40,8 @@ def main():
                     }
 
     parameters = {
-        "run":"train"
+        "run":"train",
+        "hf_token":hf_token
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
