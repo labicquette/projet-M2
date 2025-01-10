@@ -44,7 +44,7 @@ def evaluation():
                 if split.split("/")[-1] == ".ipynb_checkpoints":
                     continue
                 for row in dataset[split.split("/")[-1]]:
-                    
+
                     with open(split + "/" + get_file(row, name), "r") as f:
                         predictions.append(f.read())
 
@@ -65,10 +65,15 @@ def evaluation():
                 print("ROUGE :", rouge_result)
                 print("BERTScore (F1):", sum(bertscore_result['f1']) / len(bertscore_result['f1']))  # Moyenne des F1
                 print("SARI :", sari_result)
-
+                res = "\n" + model + ds + split.split("/")[-1] + str(rouge_result["rouge1"]) + "," + str(rouge_result["rouge2"]) +  "," + str(rouge_result["rougeL"]) +  "," + str(rouge_result["rougeLsum"]) +"," + str(sum(bertscore_result['f1']) / len(bertscore_result['f1']) +  "," + str(sari_result))
+                
+                with open("./results.csv", "a") as file:
+                    file.write(res)
     print("break")
     return 0
 
 # Exécution du script
 if __name__ == '__main__':
+    with open("./results.csv", "w") as file:
+        file.write("model,dataset,run,rouge1,rouge2,rougeL,rougeLsum,BERTScore,SARI")
     evaluation() 
