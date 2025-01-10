@@ -38,7 +38,7 @@ def inference(dataset, **parameters):
     examples = parameters["examples"]
     model_id = "meta-llama/Llama-3.2-1B"
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-
+    print(parameters["hf_token"])
     pipe = pipeline("text-generation",
                     model=model_id,
                     tokenizer = tokenizer,
