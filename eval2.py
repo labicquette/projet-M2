@@ -41,7 +41,8 @@ def evaluation():
                 predictions = []
                 sources = []
                 references = []
-
+                if split.split("/")[-1] == ".ipynb_checkpoints":
+                    continue
                 for row in dataset[split.split("/")[-1]]:
                     
                     with open(split + "/" + get_file(row, name), "r") as f:
