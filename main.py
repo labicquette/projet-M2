@@ -1,4 +1,4 @@
-from source.inference import bart,llama, llama_more, lsa, legal_pegasus, llama_small_sum
+from source.inference import bart,llama, llama_more, lsa, legal_pegasus, llama_small_sum,llama_final_sum
 from datasets import load_dataset, disable_caching
 import time
 import os
@@ -7,11 +7,12 @@ import torch
 def main():
     disable_caching()
     models = [#bart,
-              #llama,
+              llama,
               #lsa,
               #legal_pegasus,
               #llama_more,
-              llama_small_sum,
+              #llama_small_sum,
+              #llama_final_sum,
             #Llama
             ]
 
@@ -40,7 +41,7 @@ def main():
                     }
 
     parameters = {
-        "run":"train",
+        "run":"validation",
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
@@ -63,7 +64,7 @@ def main():
             if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name):
                 os.makedirs("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name)
             for run in list(dataset.keys()):
-                if run == "validation" or run == "test":
+                if run == "train" or run == "test":
                     continue
                 if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name+"/"+run):
                     os.makedirs("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name+"/"+run)

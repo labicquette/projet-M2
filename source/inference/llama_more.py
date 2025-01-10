@@ -71,6 +71,10 @@ def generate_final_summaries(dataset, **parameters):
     if not os.path.exists(save_path):  # Ensure the output directory exists before saving
         os.makedirs(save_path)  # Create the output directory if it doesn’t exist
 
+
+
+
+
     for i, ex in enumerate(tqdm(dataset[run][examples][356:])):  # Use progress tracking for transparency
         links = re.findall(r'<a href="(/cases/federal/us/\d+/\d+/)".*?>.*?</a>',ex)  # Extract links for processing
         full_links = [base_url + link for link in links]  # Convert relative links to absolute for uniformity
