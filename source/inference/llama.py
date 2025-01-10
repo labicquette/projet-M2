@@ -38,24 +38,28 @@ def inference(dataset, **parameters):
     examples = parameters["examples"]
     model_id = "meta-llama/Llama-3.2-1B"
     tokenizer = AutoTokenizer.from_pretrained(model_id)
-    print(parameters["hf_token"])
     pipe = pipeline("text-generation",
                     model=model_id,
                     tokenizer = tokenizer,
                     token=parameters["hf_token"],
                     device_map="auto",
                     torch_dtype=torch.bfloat16,
-                    max_new_tokens=20,
                     return_full_text =False,
                     add_special_tokens=True
                     )
+    terminators = [
+            pipe.tokenizer.eos_token_id,
+            pipe.tokenizer.convert_tokens_to_ids("<|eot_id|>")
+            ] 
+    pipe.model.generation_config.pad_token_id = pipe.tokenizer.eos_token_id
     print(dataset)
     prompts = [ "Resume the content of the following text while keeping all the information" + t for t in dataset[run][examples]]
     #dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     #print(prompts)
-    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9)):
+    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,eos_token_id=terminators,)):
         text = out[0]['generated_text']
         print(text)
+        print("out", out)
 
 
 
