@@ -4,7 +4,7 @@ from ollama import Client
 from tqdm import tqdm
 import os
 import torch
-from transformers import pipeline, AutoTokenizer, AutoModel
+from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 
 def get_model(**parameters):
     client = Client(host='http://localhost:11434')
@@ -37,7 +37,7 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
     model_id = "meta-llama/Llama-3.2-1B"
-    model = AutoModel.from_pretrained(model_id)
+    model = AutoModelForCausalLM.from_pretrained(model_id)
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     pipe = pipeline("text-generation",
                     model=model,
