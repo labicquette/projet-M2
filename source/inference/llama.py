@@ -1,7 +1,7 @@
 from source.utils import get_file
 import ollama
 from ollama import Client
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 import os
 import torch
 from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
