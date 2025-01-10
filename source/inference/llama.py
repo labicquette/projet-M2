@@ -41,6 +41,7 @@ def inference(dataset, **parameters):
     pipe = pipeline("text-generation",
                     model=model_id,
                     tokenizer = tokenizer,
+                    attn_implementation="flash_attention_2",
                     token=parameters["hf_token"],
                     device_map="auto",
                     torch_dtype=torch.bfloat16,
