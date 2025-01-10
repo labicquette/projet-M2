@@ -60,7 +60,7 @@ def inference(dataset, **parameters):
     #dataset[run].map(lambda ex, i : mapped(ex[examples], i, client, dataset, run, parameters), with_indices=True)
     #print(prompts)
     print("start pipeline")
-    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,truncation=True,eos_token_id=terminators,)):
+    for out in tqdm(pipe(prompts,do_sample=True,temperature=0.6,top_p=0.9,truncation=True,eos_token_id=terminators, cache_implementation="quantized", cache_config={"nbits": 4, "backend": "quanto"})):
         text = out[0]['generated_text']
         print(text)
         print("out", out)
