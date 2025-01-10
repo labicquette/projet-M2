@@ -37,7 +37,10 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
     model_id = "meta-llama/Llama-3.2-1B"
-    model = AutoModelForCausalLM.from_pretrained(model_id, attn_implementation = 'flash_attention_2')
+    model = AutoModelForCausalLM.from_pretrained(model_id, 
+                                                 attn_implementation = 'flash_attention_2',
+                                                 torch_dtype = torch.bfloat16,
+                                                 device_map="auto")
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     pipe = pipeline("text-generation",
                     model=model,
