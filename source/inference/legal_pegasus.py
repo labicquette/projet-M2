@@ -6,7 +6,7 @@ from tqdm import tqdm
 from source.utils import get_file
 
 def get_model(**parameters):
-    model = AutoModelForSeq2SeqLM.from_pretrained("nsi319/legal-pegasus")
+    model = AutoModelForSeq2SeqLM.from_pretrained("nsi319/legal-pegasus").to("cuda")
     return model
 
 def get_tokenizer(**parameters):
@@ -26,7 +26,7 @@ def inference(dataset, **parameters):
         #file = dataset[run][i]["case_name"].replace("/","")+ "-"+ id_case[0]+ "-"+ id_case[1]
         #print(dataset[run][i])
 
-        input_tokenized = tok.encode(ex, return_tensors='pt',max_length=1024,truncation=True)
+        input_tokenized = tok.encode(ex, return_tensors='pt',max_length=1024,truncation=True).to("cuda")
         summary_ids = model.generate(input_tokenized,
                                   num_beams=9,
                                   no_repeat_ngram_size=3,
@@ -39,7 +39,7 @@ def inference(dataset, **parameters):
 
         print(summary)
 
-        #file = get_file(dataset[run][i], parameters["dataset_name"])
-        #with open(parameters["save_path"]+file, "w") as f:
-        #    f.write(res[0]["summary_text"])
-        #    f.close()
+        file = get_file(dataset[run][i], parameters["dataset_name"])
+        with open(parameters["save_path"]+file, "w") as f:
+            f.write(summary)
+            f.close()
