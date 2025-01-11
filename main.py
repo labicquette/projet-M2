@@ -7,12 +7,12 @@ import torch
 def main():
     disable_caching()
     models = [#bart,
-              llama,
+              #llama,
               #lsa,
               #legal_pegasus,
               #llama_more,
               #llama_small_sum,
-              #llama_final_sum,
+              llama_final_sum,
             #Llama
             ]
 

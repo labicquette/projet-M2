@@ -24,9 +24,9 @@ def inference(dataset, **parameters):
     # Create a dictionary mapping case names to justia links
     case_dict = dict(zip(case_names, justia_links))
 
+
     # Print the resulting dictionary
     print(case_dict)
-    
     for i,ex in enumerate(tqdm(dataset["train"][examples])):    
           response = client.chat(model='hf.co/bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M', messages=[
                   {
