@@ -9,6 +9,14 @@ from bs4 import BeautifulSoup
 import re
 from tqdm import tqdm
 
+def get_model(**parameters):
+    client = Client(host='http://localhost:11434')
+    return client
+
+def get_tokenizer(**parameters):
+    return "tok"
+
+
 def remove_html_tags(text):
     if not text:
         return ""
