@@ -5,6 +5,7 @@ import os
 import torch
 
 def main():
+    hf_token = os.environ['HF_TOKEN']
     #disable_caching()
     models = [#bart,
               #llama,
@@ -39,7 +40,8 @@ def main():
                     }
 
     parameters = {
-        "run":"validation"
+        "run":"train",
+        "hf_token":hf_token
         }
     
     curr_time = time.strftime("%Y%m%d-%H%M%S")
@@ -62,7 +64,7 @@ def main():
             if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name):
                 os.makedirs("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name)
             for run in list(dataset.keys()):
-                if run == "train" or run == "test":
+                if run == "validation" or run == "test":
                     continue
                 if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name+"/"+run):
                     os.makedirs("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]+"/"+name+"/"+run)
