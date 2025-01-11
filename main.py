@@ -1,4 +1,4 @@
-from source.inference import bart,llama, llama_more, lsa, legal_pegasus, llama_small_sum,llama_final_sum
+from source.inference import bart,llama, llama_more, lsa, legal_pegasus, llama_small_sum,llama_final_sum,test
 from datasets import load_dataset, disable_caching
 import time
 import os
@@ -12,7 +12,8 @@ def main():
               #legal_pegasus,
               #llama_more,
               #llama_small_sum,
-              llama_final_sum,
+              #llama_final_sum,
+              test,
             #Llama
             ]
 
@@ -52,7 +53,7 @@ def main():
     #TODO add LSA,CaseSumm,Pegasus
 
     for model in models:
-        parameters["save_path"] = "./runs/"+"Summary"+"/"+model.__name__.split(".")[-1]
+        parameters["save_path"] ="./runs/"+"Summary"+"/"+model.__name__.split(".")[-1]
         if not os.path.exists("./runs/"+curr_time+"/"+model.__name__.split(".")[-1]):
             os.makedirs("./runs/"+curr_time+"/"+model.__name__.split(".")[-1])
         parameters["model"] = model.get_model(**parameters)
