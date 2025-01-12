@@ -64,7 +64,6 @@ def inference(dataset, **parameters):
                   
                   # Check if link is in the train split
                   if link in dataset["train"]["justia_link"]:
-                      print(True)
                       train_index = np.where(np.array(dataset["train"]["justia_link"]) == link)[0][0]
                       file = get_file(dataset["train"][int(train_index)], "SCOTUS")
                       # Read the content of the corresponding file
@@ -74,11 +73,13 @@ def inference(dataset, **parameters):
                           ex = ex.replace(match, content)
                           #print(f"Content of the file for link {link}:")
                           #print(content)
+                      new_match = re.sub(r'>.*?<', f'>{content}<', match)
+                      ex = ex.replace(match, new_match)
+                      print(ex)
 
 
                   # Check if link is in the validation split
                   if link in dataset["validation"]["justia_link"]:
-                      print(True)
                       validation_index = np.where(np.array(dataset["validation"]["justia_link"]) == link)[0][0]
                       file = get_file(dataset["validation"][int(validation_index)], "SCOTUS")
                       # Read the content of the corresponding file
@@ -88,7 +89,10 @@ def inference(dataset, **parameters):
                           ex = ex.replace(match, content)
                           #print(f"Content of the file for link {link} in validation split:")
                           #print(content)
-           
+                                      # Replace only the link text (preserve surrounding HTML)
+                      new_match = re.sub(r'>.*?<', f'>{content}<', match)
+                      ex = ex.replace(match, new_match)
+                      print(ex)
           ex_no_html = remove_html_tags(ex)
           # Send the modified text to the chat model
           response = client.chat(
@@ -108,8 +112,8 @@ def inference(dataset, **parameters):
           # Define the output file name and save
           file = get_file(dataset[run][i], parameters["dataset_name"])
           with open(os.path.join(save_path, file), "w") as f:
-              f.write(response['message']['content'])
-  
+              f.write(response['message']['content'])         
+
 
 
 
