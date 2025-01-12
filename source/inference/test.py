@@ -29,7 +29,7 @@ def inference(dataset, **parameters):
 
     examples = parameters["examples"]
 
-    file_path = "/content/drive/MyDrive/projet_m2/data/small_sum_final"
+    sum_path = "/content/drive/MyDrive/projet_m2/data/small_sum_final"
 
     save_path = parameters["save_path"]
 
@@ -38,11 +38,11 @@ def inference(dataset, **parameters):
     # Process each example in the dataset
 
     for i, ex in enumerate(tqdm(dataset[run][examples])):
-        
+          
           file = get_file(dataset[run][i], parameters["dataset_name"])
           if os.path.exists(save_path+file):
                   continue
-        
+          
           # Updated regex patterns for better matching
           regex_1 = r'<a href="/cases/federal/us/\d+/\d+/">.*?</a>'
           regex_2 = r'<a\s+href\s*=\s*["\']\/cases\/federal\/us\/\d+\/\d+\/["\']>.*?</a>'
@@ -68,7 +68,7 @@ def inference(dataset, **parameters):
                       train_index = np.where(np.array(dataset["train"]["justia_link"]) == link)[0][0]
                       file = get_file(dataset["train"][int(train_index)], "SCOTUS")
                       # Read the content of the corresponding file
-                      file_path = os.path.join(file_path, file)
+                      file_path = os.path.join(sum_path, file)
                       with open(file_path, "r") as content_file:
                           content = content_file.read()
                           ex = ex.replace(match, content)
@@ -82,13 +82,13 @@ def inference(dataset, **parameters):
                       validation_index = np.where(np.array(dataset["validation"]["justia_link"]) == link)[0][0]
                       file = get_file(dataset["validation"][int(validation_index)], "SCOTUS")
                       # Read the content of the corresponding file
-                      file_path = os.path.join(file_path, file)
+                      file_path = os.path.join(sum_path, file)
                       with open(file_path, "r") as content_file:
                           content = content_file.read()
                           ex = ex.replace(match, content)
                           #print(f"Content of the file for link {link} in validation split:")
                           #print(content)
-            
+           
           ex_no_html = remove_html_tags(ex)
           # Send the modified text to the chat model
           response = client.chat(
@@ -109,6 +109,7 @@ def inference(dataset, **parameters):
           file = get_file(dataset[run][i], parameters["dataset_name"])
           with open(os.path.join(save_path, file), "w") as f:
               f.write(response['message']['content'])
+  
 
 
 
@@ -141,8 +142,7 @@ def inference(dataset, **parameters):
 
 
 
-
-          '''
+    '''
           for match in all_matches:
               link_match = re.search(r'href\s*=\s*["\']([^"\']+)["\']', match)
               if link_match:
@@ -172,4 +172,4 @@ def inference(dataset, **parameters):
                           print(f"Content of the file for link {link} (validation):")
                   
                           print(content)
-          '''              
+      '''              
